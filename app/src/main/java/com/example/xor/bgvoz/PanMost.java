@@ -22,6 +22,8 @@ public class PanMost extends AppCompatActivity {
 
     stanica.setAdapter(nizStanica);
 
+    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
