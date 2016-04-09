@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="batajnica">
+        <item>Batajnica</item>
+        <item>Zemun Polje</item>
+        <item>Zemun</item>
+        <item>T.Bunar</item>
+        <item>NBG</item>
+        <item>Prokop</item>
+        <item>Karadjordjev Park</item>
+        <item>Vukov Spomenik</item>
+        <item>Pan.Most</item>
+    </string-array>
+</resources>
