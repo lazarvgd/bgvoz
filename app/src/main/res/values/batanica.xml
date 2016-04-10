@@ -11,4 +11,16 @@
         <item>Vukov Spomenik</item>
         <item>Pan.Most</item>
     </string-array>
+
+    <string-array name="batajnica_tabele">
+        <item>BATAJNICA</item>
+        <item>ZEMUN_POLJE</item>
+        <item>ZEMUN</item>
+        <item>TOSIN_BUNAR</item>
+        <item>NBG</item>
+        <item>PROKOP</item>
+        <item>KARADJORDJEV_PARK</item>
+        <item>VUKOV_SPOMENIK</item>
+        <item>PAN_MOST</item>
+    </string-array>
 </resources>

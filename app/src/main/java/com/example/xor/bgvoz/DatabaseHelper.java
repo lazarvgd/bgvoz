@@ -1,8 +1,12 @@
 package com.example.xor.bgvoz;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xor on 7.4.16..
@@ -41,13 +45,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
-    SQLiteDatabase db= this.getWritableDatabase();
+        SQLiteDatabase db= this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table "+TABLE_BATAJNICA+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,BATAJNICA TEXT,ZEMUN_POLJE TEXT,ZEMUN TEXT,TOSIN_BUNAR TEXT,NBG TEXT,PROKOP TEXT,KARADJORDJEV_PARK TEXT,VUKOV_SPOMENIK TEXT,PAN_MOST TEXT)");
-        db.execSQL("create table "+TABLE_PAN_MOST+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,PAN_MOST TEXT,VUKOV_SPOMENIK TEXT,KARADJORDJEV_PARK TEXT,PROKOP TEXT,NBG TEXT,TOSIN_BUNAR TEXT,ZEMUN TEXT,ZEMUN_POLJE TEXT,BATAJNICA TEXT)");
+        db.execSQL("create table " + TABLE_PAN_MOST + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,PAN_MOST TEXT,VUKOV_SPOMENIK TEXT,KARADJORDJEV_PARK TEXT,PROKOP TEXT,NBG TEXT,TOSIN_BUNAR TEXT,ZEMUN TEXT,ZEMUN_POLJE TEXT,BATAJNICA TEXT)");
 
     }
 
@@ -56,5 +60,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS"+TABLE_BATAJNICA);
         db.execSQL("DROP TABLE IF EXISTS"+TABLE_PAN_MOST);
         onCreate(db);
+    }
+
+    public List<String> getTimesBataja(String stanica) {
+
+        List<String> vremena = new ArrayList<String>();
+
+        // Select All Query
+        String selectQuery = "SELECT " + stanica +" FROM " + TABLE_BATAJNICA;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                String time = cursor.getString(0);
+                vremena.add(time);
+
+            } while (cursor.moveToNext());
+        }
+        // fake data
+        else if("NBG".matches(stanica)){
+            vremena.add("11:35");
+            vremena.add("12:35");
+            vremena.add("13:35");
+            vremena.add("14:35");
+            vremena.add("15:35");
+        }
+        else {
+            vremena.add("18:35");
+            vremena.add("19:35");
+            vremena.add("20:35");
+            vremena.add("21:35");
+            vremena.add("22:35");
+        }
+
+        // return contact list
+        return vremena;
     }
 }
