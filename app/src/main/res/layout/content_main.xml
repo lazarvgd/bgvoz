@@ -27,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Odaberite smer"
+        android:textAllCaps="true"
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
@@ -37,21 +38,21 @@
     <Button
         android:id="@+id/batajnica"
         android:text="Batajnica -> Pan.Most"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/info"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"/>
-
+              android:layout_marginTop="20dp"/>
 
     <Button
         android:id="@+id/panMost"
         android:text="Pan.Most -> Batajnica"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/batajnica"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"/>
 
 
 </RelativeLayout>

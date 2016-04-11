@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_P_3="VUKOV_SPOMENIK";
     public static final String COL_P_2="PAN_MOST";
 
-    private  Context myContext;
+    private Context myContext;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -60,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         else
         {
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+            DB_PATH = "/data/data/"+context.getPackageName() +"/databases/";
         }
         this.myContext = context;
     }
@@ -134,10 +134,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try{
             String myPath = DB_PATH + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
+            Log.d("checking DB" ,checkDB+"");
         }catch(SQLiteException e){
 
             //database does't exist yet.
+            Log.d("Exception" , e+"");
 
         }
 
