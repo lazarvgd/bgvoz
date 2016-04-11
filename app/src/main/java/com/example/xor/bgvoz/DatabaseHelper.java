@@ -78,6 +78,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS"+TABLE_BATAJNICA);
         db.execSQL("DROP TABLE IF EXISTS"+TABLE_PAN_MOST);
         onCreate(db);
+
+        /*if (newVersion > oldVersion)
+            try {
+                copyDataBase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+*/
+        //pokusaj da se kopira postojeca baza umjesto nove
     }
 
 
@@ -171,6 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int length;
         while ((length = myInput.read(buffer))>0){
             myOutput.write(buffer, 0, length);
+
         }
 
         //Close the streams

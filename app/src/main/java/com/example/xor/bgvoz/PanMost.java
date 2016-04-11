@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,11 @@ public class PanMost extends AppCompatActivity {
         setContentView(R.layout.activity_pan_most);
 
         database = new DatabaseHelper(this);
+        try {
+            database.createDataBase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } //pokusaj da se kopira postojeca baza umjesto nove
 
         stanica= (Spinner)findViewById(R.id.stanica);
         polazak= (Spinner)findViewById(R.id.polazak);
