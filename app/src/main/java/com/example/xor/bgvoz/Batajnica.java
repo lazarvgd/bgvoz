@@ -29,6 +29,7 @@ public class Batajnica extends AppCompatActivity {
         stanica= (Spinner)findViewById(R.id.stanica);
         polazak= (Spinner)findViewById(R.id.polazak);
 
+
         ArrayAdapter<CharSequence> nizStanica= ArrayAdapter.createFromResource(this, R.array.batajnica, android.R.layout.simple_spinner_item);
 
         nizStanica.setDropDownViewResource(android.R.layout.simple_spinner_item);
@@ -36,8 +37,7 @@ public class Batajnica extends AppCompatActivity {
         stanica.setAdapter(nizStanica);
 
 
-
-        stanice = getResources().getStringArray(R.array.batajnica);
+        stanice = getResources().getStringArray(R.array.batajnica_tabele);
 
         stanica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -11,4 +11,16 @@
         <item>Zemun Polje</item>
         <item>Batajnica</item>
     </string-array>
+
+    <string-array name="panmost_tabele">
+        <item>PAN_MOST</item>
+        <item>VUKOV_SPOMENIK</item>
+        <item>KARADJORDJEV_PARK</item>
+        <item>PROKOP</item>
+        <item>NBG</item>
+        <item>TOSIN_BUNAR</item>
+        <item>ZEMUN</item>
+        <item>ZEMUN_POLJE</item>
+        <item>BATAJNICA</item>
+    </string-array>
 </resources>
