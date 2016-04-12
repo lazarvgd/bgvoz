@@ -48,21 +48,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_P_3="VUKOV_SPOMENIK";
     public static final String COL_P_2="PAN_MOST";
 
-    private Context myContext;
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
-        SQLiteDatabase db= this.getWritableDatabase();
-        this.myContext = context;
-
-        if(android.os.Build.VERSION.SDK_INT >= 17){
-            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        }
-        else
-        {
-            DB_PATH = "/data/data/"+context.getPackageName() +"/databases/";
-        }
-        this.myContext = context;
+       //SQLiteDatabase db= this.getWritableDatabase();
     }
 
 
@@ -79,140 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS"+TABLE_PAN_MOST);
         onCreate(db);
 
-        /*if (newVersion > oldVersion)
-            try {
-                copyDataBase();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-*/
-        //pokusaj da se kopira postojeca baza umjesto nove
     }
-
-
-
-    //The Android's default system path of your application database.
-    private static String DB_PATH;
-
-    private static String DB_NAME = DATABASE_NAME;
-
-    private SQLiteDatabase myDataBase;
-
-    /**
-     * Constructor
-     * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
-     * @param context
-     */
-
-    /**
-     * Creates a empty database on the system and rewrites it with your own database.
-     * */
-    public void createDataBase() throws IOException {
-
-        boolean dbExist = checkDataBase();
-
-        if(dbExist){
-            //do nothing - database already exist
-        }else{
-
-            //By calling this method and empty database will be created into the default system path
-            //of your application so we are gonna be able to overwrite that database with our database.
-            this.getReadableDatabase();
-
-            try {
-
-                copyDataBase();
-
-            } catch (IOException e) {
-
-                throw new Error("Error copying database");
-
-            }
-        }
-
-    }
-
-    /**
-     * Check if the database already exist to avoid re-copying the file each time you open the application.
-     * @return true if it exists, false if it doesn't
-     */
-    private boolean checkDataBase(){
-
-        SQLiteDatabase checkDB = null;
-
-        try{
-            String myPath = DB_PATH + DB_NAME;
-            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-            Log.d("checking DB" ,checkDB+"");
-        }catch(SQLiteException e){
-
-            //database does't exist yet.
-            Log.d("Exception" , e+"");
-
-        }
-
-        if(checkDB != null){
-
-            checkDB.close();
-
-        }
-
-        return checkDB != null ? true : false;
-    }
-
-    /**
-     * Copies your database from your local assets-folder to the just created empty database in the
-     * system folder, from where it can be accessed and handled.
-     * This is done by transfering bytestream.
-     * */
-    private void copyDataBase() throws IOException{
-
-        //Open your local db as the input stream
-        InputStream myInput = myContext.getAssets().open(DB_NAME);
-        // Path to the just created empty db
-        String outFileName = DB_PATH + DB_NAME;
-
-        //Open the empty db as the output stream
-        OutputStream myOutput = new FileOutputStream(outFileName);
-
-        //transfer bytes from the inputfile to the outputfile
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = myInput.read(buffer))>0){
-            myOutput.write(buffer, 0, length);
-
-        }
-
-        //Close the streams
-        myOutput.flush();
-        myOutput.close();
-        myInput.close();
-
-    }
-
-    public void openDataBase() throws SQLException {
-
-        //Open the database
-        String myPath = DB_PATH + DB_NAME;
-        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
-    }
-
-    @Override
-    public synchronized void close() {
-
-        if(myDataBase != null)
-            myDataBase.close();
-
-        super.close();
-
-    }
-
-    // Add your public helper methods to access and get content from the database.
-    // You could return cursors by doing "return myDataBase.query(....)" so it'd be easy
-    // to you to create adapters for your views.
-
-
 
 
     public List<String> getTimesBataja(String stanica) {
@@ -221,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Select All Query
         String selectQuery = "SELECT " + stanica +" FROM " + TABLE_BATAJNICA;
-
+        Log.i("query is:",selectQuery+"");
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -229,12 +84,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String time = cursor.getString(0);
-                vremena.add(time);
-
+                if(!time.toString().equals("")){
+                    vremena.add(time);}
             } while (cursor.moveToNext());
         }
+        db.close();
         // fake data
-        else if("NBG".matches(stanica)){
+        /*else if("NBG".matches(stanica)){
             vremena.add("11:35");
             vremena.add("12:35");
             vremena.add("13:35");
@@ -247,9 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             vremena.add("20:35");
             vremena.add("21:35");
             vremena.add("22:35");
-        }
-
-        // return contact list
+        }*/
         return vremena;
     }
 
@@ -268,12 +122,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String time = cursor.getString(0);
-                vremena.add(time);
+                if(!time.toString().equals("")){
+                vremena.add(time);}
 
             } while (cursor.moveToNext());
         }
+        db.close();
         // fake data
-        else if("NBG".matches(stanica)){
+        /*else if("NBG".matches(stanica)){
             vremena.add("11:35");
             vremena.add("12:35");
             vremena.add("13:35");
@@ -286,9 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             vremena.add("20:35");
             vremena.add("21:35");
             vremena.add("22:35");
-        }
-
-        // return contact list
+        }*/
         return vremena;
     }
 

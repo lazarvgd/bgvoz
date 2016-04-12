@@ -13,17 +13,17 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textColor="#330000"
         android:text="PANCEVACKI MOST->BATAJNICA"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"/>
+        android:layout_marginBottom="15dp"/>
 
 
     <TextView
-        android:id="@+id/start1"
+        android:id="@+id/stanica_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#330000"
@@ -32,28 +32,44 @@
         android:layout_below="@+id/title"
         android:layout_margin="10dp"/>
     <Spinner
-        android:id="@+id/stanica"
+        android:id="@+id/stanica_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/start1"
+        android:layout_toRightOf="@+id/stanica_text"
         android:layout_below="@+id/title"/>
 
 
     <TextView
-        android:id="@+id/start2"
+        android:id="@+id/polazak_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#330000"
         android:text="Polazak"
         android:textSize="15sp"
-        android:layout_below="@+id/start1"
+        android:layout_below="@+id/stanica_text"
         android:layout_margin="10dp"/>
     <Spinner
-        android:id="@+id/polazak"
+        android:id="@+id/polazak_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/start2"
-        android:layout_below="@+id/start1"/>
+        android:layout_toRightOf="@+id/polazak_text"
+        android:layout_below="@+id/stanica_text"/>
+    <View
+        android:id="@+id/hline"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#654334"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/polazak_spinner"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Polasci:"
+        android:textSize="15sp"
+        android:layout_below="@+id/hline"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"/>
 
    
 
