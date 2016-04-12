@@ -14,8 +14,8 @@ public class PanMost extends AppCompatActivity {
     DatabaseHelper database;
     String [] stanice;
 
-    Spinner stanica;
-    Spinner polazak;
+    Spinner polaznaStanica;
+    Spinner vrijemePolaska;
 
 
     @Override
@@ -25,30 +25,30 @@ public class PanMost extends AppCompatActivity {
 
         database = new DatabaseHelper(this);
 
-        stanica= (Spinner)findViewById(R.id.stanica_spinner);
-        polazak= (Spinner)findViewById(R.id.polazak_spinner);
+        polaznaStanica = (Spinner)findViewById(R.id.stanica_spinner);
+        vrijemePolaska = (Spinner)findViewById(R.id.polazak_spinner);
 
         ArrayAdapter<CharSequence> nizStanica= ArrayAdapter.createFromResource(this, R.array.panmost, android.R.layout.simple_spinner_item);
 
         nizStanica.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
-        stanica.setAdapter(nizStanica);
+        polaznaStanica.setAdapter(nizStanica);
 
-        //uzimam panmost_tabele i prosledjujem ga nizu stanica jer je zapisano u formatu u kome je i ime kolona u DB
+
         stanice = getResources().getStringArray(R.array.panmost_tabele);
 
-        stanica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        polaznaStanica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 List<String> vremena;
 
-                vremena=database.getTimesPanMost(stanice[position]);
+                vremena = database.getTimesPanMost(stanice[position]);
 
-                ArrayAdapter<String> nizPolazaka=new ArrayAdapter<String>(PanMost.this,android.R.layout.simple_list_item_1,vremena);
+                ArrayAdapter<String> nizPolazaka = new ArrayAdapter<String>(PanMost.this, android.R.layout.simple_list_item_1, vremena);
 
                 nizPolazaka.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                polazak.setAdapter(nizPolazaka);
+                vrijemePolaska.setAdapter(nizPolazaka);
             }
 
             @Override

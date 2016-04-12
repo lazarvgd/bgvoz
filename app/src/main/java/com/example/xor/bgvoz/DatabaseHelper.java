@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,15 +49,93 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_P_3="VUKOV_SPOMENIK";
     public static final String COL_P_2="PAN_MOST";
 
+    private SQLiteDatabase mDataBase;
+    private static String TAG = "DataBaseHelper";
+    private final Context mContext;
+    private static String DB_PATH = "";
+    private static String DB_NAME=DATABASE_NAME;
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
-       //SQLiteDatabase db= this.getWritableDatabase();
+        SQLiteDatabase database= this.getWritableDatabase();
+
+        if(android.os.Build.VERSION.SDK_INT >= 17){
+            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
+        }
+        else
+        {
+            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+        }
+        this.mContext = context;
+    }
+//-------------------------------------------------------------------------------------------------
+public void createDataBase() throws IOException
+{
+    //If the database does not exist, copy it from the assets.
+
+    boolean mDataBaseExist = checkDataBase();
+    if(!mDataBaseExist)
+    {
+        this.getReadableDatabase();
+        this.close();
+        try
+        {
+            //Copy the database from assests
+            copyDataBase();
+            Log.e(TAG, "createDatabase database created");
+        }
+        catch (IOException mIOException)
+        {
+            throw new Error("ErrorCopyingDataBase");
+        }
+    }
+}
+
+    private boolean checkDataBase()
+    {
+        File dbFile = new File(DB_PATH + DB_NAME);
+        //Log.v("dbFile", dbFile + "   "+ dbFile.exists());
+        return dbFile.exists();
+    }
+
+    private void copyDataBase() throws IOException
+    {
+        InputStream mInput = mContext.getAssets().open(DB_NAME);
+        String outFileName = DB_PATH + DB_NAME;
+        OutputStream mOutput = new FileOutputStream(outFileName);
+        byte[] mBuffer = new byte[1024];
+        int mLength;
+        while ((mLength = mInput.read(mBuffer))>0)
+        {
+            mOutput.write(mBuffer, 0, mLength);
+        }
+        mOutput.flush();
+        mOutput.close();
+        mInput.close();
+    }
+    public boolean openDataBase() throws SQLException
+    {
+        String mPath = DB_PATH + DB_NAME;
+        //Log.v("mPath", mPath);
+        mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+        //mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+        return mDataBase != null;
+    }
+
+    @Override
+    public synchronized void close()
+    {
+        if(mDataBase != null)
+            mDataBase.close();
+        super.close();
     }
 
 
+
+    //-------------------------------------------------------------------------------------------------
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_BATAJNICA+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,BATAJNICA TEXT,ZEMUN_POLJE TEXT,ZEMUN TEXT,TOSIN_BUNAR TEXT,NBG TEXT,PROKOP TEXT,KARADJORDJEV_PARK TEXT,VUKOV_SPOMENIK TEXT,PAN_MOST TEXT)");
+       db.execSQL("create table "+TABLE_BATAJNICA+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,BATAJNICA TEXT,ZEMUN_POLJE TEXT,ZEMUN TEXT,TOSIN_BUNAR TEXT,NBG TEXT,PROKOP TEXT,KARADJORDJEV_PARK TEXT,VUKOV_SPOMENIK TEXT,PAN_MOST TEXT)");
         db.execSQL("create table " + TABLE_PAN_MOST + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,PAN_MOST TEXT,VUKOV_SPOMENIK TEXT,KARADJORDJEV_PARK TEXT,PROKOP TEXT,NBG TEXT,TOSIN_BUNAR TEXT,ZEMUN TEXT,ZEMUN_POLJE TEXT,BATAJNICA TEXT)");
 
     }
@@ -70,12 +149,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<String> getTimesBataja(String stanica) {
+    public List<String> getTimesBataja(String polaznaStanica) {
 
         List<String> vremena = new ArrayList<String>();
 
         // Select All Query
-        String selectQuery = "SELECT " + stanica +" FROM " + TABLE_BATAJNICA;
+        String selectQuery = "SELECT " + polaznaStanica +" FROM " + TABLE_BATAJNICA;
         Log.i("query is:",selectQuery+"");
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -90,7 +169,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         // fake data
-        /*else if("NBG".matches(stanica)){
+        /*else if("NBG".matches(polaznaStanica)){
             vremena.add("11:35");
             vremena.add("12:35");
             vremena.add("13:35");
@@ -108,13 +187,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<String> getTimesPanMost(String stanica) {
+    public List<String> getTimesPanMost(String polaznaStanica) {
 
         List<String> vremena = new ArrayList<String>();
 
         // Select All Query
-        String selectQuery = "SELECT " + stanica +" FROM " + TABLE_PAN_MOST;
-
+        String selectQuery = "SELECT " + polaznaStanica +" FROM " + TABLE_PAN_MOST;
+        Log.i("query is:",selectQuery+"");
         SQLiteDatabase db = this.getWritableDatabase();//   assuming that this is connection to the database
         Cursor cursor = db.rawQuery(selectQuery, null);//   passing query to the db
 
@@ -129,7 +208,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         // fake data
-        /*else if("NBG".matches(stanica)){
+        /*else if("NBG".matches(polaznaStanica)){
             vremena.add("11:35");
             vremena.add("12:35");
             vremena.add("13:35");

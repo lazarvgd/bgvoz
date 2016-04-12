@@ -15,8 +15,8 @@ public class Batajnica extends AppCompatActivity {
     DatabaseHelper database;
     String [] stanice;
 
-    Spinner stanica;
-    Spinner polazak;
+    Spinner polaznaStanica;
+    Spinner vrijemePolaska;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,21 +25,18 @@ public class Batajnica extends AppCompatActivity {
 
         database = new DatabaseHelper(this);
 
-
-        stanica= (Spinner)findViewById(R.id.stanica_spinner);
-        polazak= (Spinner)findViewById(R.id.polazak_spinner);
-
+        polaznaStanica = (Spinner)findViewById(R.id.stanica_spinner);
+        vrijemePolaska = (Spinner)findViewById(R.id.polazak_spinner);
 
         ArrayAdapter<CharSequence> nizStanica= ArrayAdapter.createFromResource(this, R.array.batajnica, android.R.layout.simple_spinner_item);
 
         nizStanica.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
-        stanica.setAdapter(nizStanica);
-
+        polaznaStanica.setAdapter(nizStanica);
 
         stanice = getResources().getStringArray(R.array.batajnica_tabele);
 
-        stanica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        polaznaStanica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Stanica", stanice[position]);
@@ -47,13 +44,14 @@ public class Batajnica extends AppCompatActivity {
                 List<String> vremena;
                 vremena = database.getTimesBataja(stanice[position]);
 
-                ArrayAdapter<String> nizPolazaka=new ArrayAdapter<String>(
+                ArrayAdapter<String> nizPolazaka = new ArrayAdapter<String>(
                         Batajnica.this,
                         android.R.layout.simple_list_item_1,
                         vremena);
 
                 nizPolazaka.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                polazak.setAdapter(nizPolazaka);
+                vrijemePolaska.setAdapter(nizPolazaka);
+                database.close();
             }
 
             @Override
@@ -61,8 +59,5 @@ public class Batajnica extends AppCompatActivity {
 
             }
         });
-
     }
-
-
 }
