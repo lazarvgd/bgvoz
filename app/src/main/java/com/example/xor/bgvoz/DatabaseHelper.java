@@ -21,6 +21,16 @@ import java.util.List;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private static String DB_PATH = "/data/data/com.example.xor.bgvoz/databases/";
+    private static String DB_NAME = "redVoznje.db";
+
+    private SQLiteDatabase myDataBase;
+
+    private SQLiteDatabase mDataBase;
+    private static String TAG = "DataBaseHelper";
+    private final Context mContext;
+
+
     public static final String DATABASE_NAME="redVoznje.db";
     public static final String TABLE_BATAJNICA="batajnica_table";
     public static final String TABLE_PAN_MOST="panMost_table";
@@ -49,102 +59,104 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_P_3="VUKOV_SPOMENIK";
     public static final String COL_P_2="PAN_MOST";
 
-    private SQLiteDatabase mDataBase;
-    private static String TAG = "DataBaseHelper";
-    private final Context mContext;
-    private static String DB_PATH = "";
-    private static String DB_NAME=DATABASE_NAME;
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
-        SQLiteDatabase database= this.getWritableDatabase();
 
-        if(android.os.Build.VERSION.SDK_INT >= 17){
-            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        }
-        else
-        {
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
-        }
+        super(context, DB_NAME, null, 1);
         this.mContext = context;
     }
-//-------------------------------------------------------------------------------------------------
-public void createDataBase() throws IOException
-{
-    //If the database does not exist, copy it from the assets.
 
-    boolean mDataBaseExist = checkDataBase();
-    if(!mDataBaseExist)
-    {
-        this.getReadableDatabase();
-        this.close();
-        try
-        {
-            //Copy the database from assests
-            copyDataBase();
-            Log.e(TAG, "createDatabase database created");
-        }
-        catch (IOException mIOException)
-        {
-            throw new Error("ErrorCopyingDataBase");
-        }
-    }
-}
+    public void createDataBase() throws IOException{
 
-    private boolean checkDataBase()
-    {
-        File dbFile = new File(DB_PATH + DB_NAME);
-        //Log.v("dbFile", dbFile + "   "+ dbFile.exists());
-        return dbFile.exists();
+        boolean dbExist = checkDataBase();
+
+        if(dbExist){
+
+        }else{
+
+            this.getReadableDatabase();
+
+            try {
+
+                copyDataBase();
+
+            } catch (IOException e) {
+
+                throw new Error("Error copying database");
+
+            }
+        }
+
     }
 
-    private void copyDataBase() throws IOException
-    {
-        InputStream mInput = mContext.getAssets().open(DB_NAME);
+    private boolean checkDataBase(){
+
+        SQLiteDatabase checkDB = null;
+
+        try{
+            String myPath = DB_PATH + DB_NAME;
+            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+
+        }catch(SQLiteException e){
+
+            //database does't exist yet.
+
+        }
+
+        if(checkDB != null){
+
+            checkDB.close();
+
+        }
+
+        return checkDB != null ? true : false;
+    }
+
+    private void copyDataBase() throws IOException {
+
+        InputStream myInput = mContext.getAssets().open(DB_NAME);
+
         String outFileName = DB_PATH + DB_NAME;
-        OutputStream mOutput = new FileOutputStream(outFileName);
-        byte[] mBuffer = new byte[1024];
-        int mLength;
-        while ((mLength = mInput.read(mBuffer))>0)
-        {
-            mOutput.write(mBuffer, 0, mLength);
+
+        OutputStream myOutput = new FileOutputStream(outFileName);
+
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = myInput.read(buffer))>0){
+            myOutput.write(buffer, 0, length);
         }
-        mOutput.flush();
-        mOutput.close();
-        mInput.close();
+
+        myOutput.flush();
+        myOutput.close();
+        myInput.close();
+
     }
-    public boolean openDataBase() throws SQLException
-    {
-        String mPath = DB_PATH + DB_NAME;
-        //Log.v("mPath", mPath);
-        mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        //mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-        return mDataBase != null;
+
+    public void openDataBase() throws SQLException {
+
+        //Open the database
+        String myPath = DB_PATH + DB_NAME;
+        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+
     }
 
     @Override
-    public synchronized void close()
-    {
-        if(mDataBase != null)
-            mDataBase.close();
+    public synchronized void close() {
+
+        if(myDataBase != null)
+            myDataBase.close();
+
         super.close();
+
     }
 
-
-
-    //-------------------------------------------------------------------------------------------------
     @Override
     public void onCreate(SQLiteDatabase db) {
-       db.execSQL("create table "+TABLE_BATAJNICA+"(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,BATAJNICA TEXT,ZEMUN_POLJE TEXT,ZEMUN TEXT,TOSIN_BUNAR TEXT,NBG TEXT,PROKOP TEXT,KARADJORDJEV_PARK TEXT,VUKOV_SPOMENIK TEXT,PAN_MOST TEXT)");
-        db.execSQL("create table " + TABLE_PAN_MOST + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAPOMENA TEXT,PAN_MOST TEXT,VUKOV_SPOMENIK TEXT,KARADJORDJEV_PARK TEXT,PROKOP TEXT,NBG TEXT,TOSIN_BUNAR TEXT,ZEMUN TEXT,ZEMUN_POLJE TEXT,BATAJNICA TEXT)");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS"+TABLE_BATAJNICA);
-        db.execSQL("DROP TABLE IF EXISTS"+TABLE_PAN_MOST);
-        onCreate(db);
 
     }
 
@@ -155,6 +167,7 @@ public void createDataBase() throws IOException
 
         // Select All Query
         String selectQuery = "SELECT " + polaznaStanica +" FROM " + TABLE_BATAJNICA;
+
         Log.i("query is:",selectQuery+"");
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -168,21 +181,7 @@ public void createDataBase() throws IOException
             } while (cursor.moveToNext());
         }
         db.close();
-        // fake data
-        /*else if("NBG".matches(polaznaStanica)){
-            vremena.add("11:35");
-            vremena.add("12:35");
-            vremena.add("13:35");
-            vremena.add("14:35");
-            vremena.add("15:35");
-        }
-        else {
-            vremena.add("18:35");
-            vremena.add("19:35");
-            vremena.add("20:35");
-            vremena.add("21:35");
-            vremena.add("22:35");
-        }*/
+
         return vremena;
     }
 
@@ -193,6 +192,7 @@ public void createDataBase() throws IOException
 
         // Select All Query
         String selectQuery = "SELECT " + polaznaStanica +" FROM " + TABLE_PAN_MOST;
+
         Log.i("query is:",selectQuery+"");
         SQLiteDatabase db = this.getWritableDatabase();//   assuming that this is connection to the database
         Cursor cursor = db.rawQuery(selectQuery, null);//   passing query to the db
@@ -201,27 +201,16 @@ public void createDataBase() throws IOException
         if (cursor.moveToFirst()) {
             do {
                 String time = cursor.getString(0);
-                if(!time.toString().equals("")){
-                vremena.add(time);}
+
+                if(!time.toString().equals(""))
+                    vremena.add(time);
+
+                Log.d("SQLite", cursor.getString(0));
 
             } while (cursor.moveToNext());
         }
         db.close();
-        // fake data
-        /*else if("NBG".matches(polaznaStanica)){
-            vremena.add("11:35");
-            vremena.add("12:35");
-            vremena.add("13:35");
-            vremena.add("14:35");
-            vremena.add("15:35");
-        }
-        else {
-            vremena.add("18:35");
-            vremena.add("19:35");
-            vremena.add("20:35");
-            vremena.add("21:35");
-            vremena.add("22:35");
-        }*/
+
         return vremena;
     }
 

@@ -62,6 +62,7 @@
         android:layout_below="@+id/polazak_spinner"/>
 
     <TextView
+        android:id="@+id/bataja_polasci"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Polasci:"
