@@ -27,15 +27,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private SQLiteDatabase myDataBase;
 
     private SQLiteDatabase mDataBase;
-    private static String TAG = "DataBaseHelper";
     private final Context mContext;
 
 
+/*
     public static final String DATABASE_NAME="redVoznje.db";
+*/
     public static final String TABLE_BATAJNICA="batajnica_table";
     public static final String TABLE_PAN_MOST="panMost_table";
 
-    public static final String COL_B_1="ID";
+   /* public static final String COL_B_1="ID";
     public static final String COL_B_2="NAPOMENA";
     public static final String COL_B_3="BATAJNICA";
     public static final String COL_B_4="ZEMUN_POLJE";
@@ -58,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_P_4="KARADJORDJEV_PARK";
     public static final String COL_P_3="VUKOV_SPOMENIK";
     public static final String COL_P_2="PAN_MOST";
-
+*/
 
     public DatabaseHelper(Context context) {
 
@@ -170,6 +171,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.i("query is:",selectQuery+"");
         SQLiteDatabase db = this.getWritableDatabase();
+
+        String queryForChoosenStartTime="SELECT * FROM "+TABLE_BATAJNICA +"WHERE ";//komentar u sledecem redu
+        //ovde treba dodati broj ili sta god da vraca spinner kada se izabere vrijeme polaska. na osnovu toga
+        // treba da vrati cio taj red i da ispise u view-u
+
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
